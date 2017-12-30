@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CableCustomer</string>
+    <string name="title_activity_detail">Customer Details</string>
 </resources>

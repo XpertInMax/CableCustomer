@@ -5,10 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingBottom="12dp"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="12dp">
+    >
 
 
     <TextView
@@ -89,7 +88,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorAccent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_address1"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintStart_toStartOf="@+id/tv_firstName"
+        app:layout_constraintTop_toBottomOf="@+id/tv_address1" />
 
 </android.support.constraint.ConstraintLayout>

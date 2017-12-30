@@ -16,10 +16,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.goli.alla.cablecustomer"
             android:name=".data.CustomerProvider"
-            android:exported="false"/>
+            android:authorities="com.goli.alla.cablecustomer"
+            android:exported="false" />
+
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".EditorActivity"></activity>
     </application>
 
 </manifest>

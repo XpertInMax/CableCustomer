@@ -1,6 +1,8 @@
 package com.goli.alla.cablecustomer;
 
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,8 +20,6 @@ import android.widget.Toast;
 import com.goli.alla.cablecustomer.adapter.CustomerAdapter;
 import com.goli.alla.cablecustomer.data.CustomerContract.CustomerEntry;
 import com.goli.alla.cablecustomer.utilities.FakeDataUtils;
-
-import static android.widget.LinearLayout.HORIZONTAL;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>,
@@ -277,8 +276,26 @@ public class MainActivity extends AppCompatActivity
         if(mToast != null)
             mToast.cancel();
 
-        String toastMessage = "Clicked # " + clickedCustomerId + " Clicke ";
+        String toastMessage = "Clicked # " + clickedCustomerId + " Customer ";
         mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT);
         mToast.show();
+
+        Intent launchCustomerDetailIntent = new Intent(MainActivity.this, DetailActivity.class);
+        // Refactor our custom onListItemClick to pass the URI for the clicked customer Id with the Intent
+        //Uri uriForDateClicked = CustomerEntry.CONTENT_URI;
+        //uriForDateClicked.buildUpon().appendPath(Integer.toString(clickedCustomerId)).build();
+        // Above Url formed :content://com.goli.alla.cablecustomer/customer and it was always going to first row
+
+        //Use below
+        // Form the content URI that represents the specific pet that was clicked on,
+        // by appending the "id" (passed as input to this method) onto the
+        // {@link PetEntry#CONTENT_URI}.
+        // For example, the URI would be "content://com.gaf.android.cablevision/customer/2"
+        // if the pet with ID 2 was clicked on.
+        Uri uriForDateClicked = ContentUris.withAppendedId(CustomerEntry.CONTENT_URI, clickedCustomerId);
+        Log.d(LOG_TAG, "Uri formed :" + uriForDateClicked.toString());
+        launchCustomerDetailIntent.setData(uriForDateClicked);
+        startActivity(launchCustomerDetailIntent);
+
     }
 }
