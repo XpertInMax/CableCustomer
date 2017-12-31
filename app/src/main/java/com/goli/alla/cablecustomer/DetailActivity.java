@@ -1,56 +1,28 @@
 package com.goli.alla.cablecustomer;
 
+import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 
 import com.goli.alla.cablecustomer.data.CustomerContract;
 import com.goli.alla.cablecustomer.databinding.ActivityDetailBinding;
+
+import static com.goli.alla.cablecustomer.utilities.CustomerUtils.*;
 
 public class DetailActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private final String LOG_TAG = DetailActivity.class.getSimpleName();
 
-    //  Create a String array containing the names of the desired data columns from our ContentProvider
-    /*
-     * The columns of data that we are interested in displaying within our DetailActivity's list of
-     * Customer data.
-     */
-    public static final String[] MAIN_CUSTOMER_PROJECTION = {
-            CustomerContract.CustomerEntry.COLUMN_NAME_FIRST,
-            CustomerContract.CustomerEntry.COLUMN_NAME_LAST,
-            CustomerContract.CustomerEntry.COLUMN_NAME_MIDDLE,
-            CustomerContract.CustomerEntry._ID,
-            CustomerContract.CustomerEntry.COLUMN_TIMESTAMP,
-            CustomerContract.CustomerEntry.COLUMN_ADDRESS1,
-            CustomerContract.CustomerEntry.COLUMN_APT_NUM,
-            CustomerContract.CustomerEntry.COLUMN_CITY,
-            CustomerContract.CustomerEntry.COLUMN_STATE,
-            CustomerContract.CustomerEntry.COLUMN_PHONE,
-            CustomerContract.CustomerEntry.COLUMN_ADDRESS2
-    };
-
-    /*
-     * We store the indices of the values in the array of Strings above to more quickly be able to
-     * access the data from our query. If the order of the Strings above changes, these indices
-     * must be adjusted to match the order of the Strings.
-     */
-    public static final int INDEX_COLUMN_NAME_FIRST = 0;
-    public static final int INDEX_COLUMN_NAME_LAST = 1;
-    public static final int INDEX_COLUMN_NAME_MIDDLE = 2;
-    public static final int INDEX_COLUMN_ID = 3;
-    public static final int INDEX_COLUMN_TIMESTAMP = 4;
-    public static final int INDEX_COLUMN_ADDRESS1 = 5;
-    public static final int INDEX_COLUMN_APTNUM = 6;
-    public static final int INDEX_COLUMN_CITY = 7;
-    public static final int INDEX_COLUMN_STATE = 8;
-    public static final int INDEX_COLUMN_PHONE = 9;
-    public static final int INDEX_COLUMN_ADDRESS2 = 10;
 
     /*
     * This ID will be used to identify the Loader responsible for loading the weather details
@@ -80,6 +52,9 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(LOG_TAG , "onCreate : called " );
+
         //setContentView(R.layout.activity_detail);
         //Instantiate mDetailBinding using DataBindingUtil
         mDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
@@ -93,6 +68,28 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
 
         /* This connects our Activity into the loader lifecycle. */
         getSupportLoaderManager().initLoader(ID_DETAIL_LOADER, null, this);
+
+        // Setup FAB to open EditorActivity to Edit Customer
+        FloatingActionButton editCustomerFAB = (FloatingActionButton)findViewById(R.id.editFab);
+        editCustomerFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editorActivityIntent = new Intent(DetailActivity.this, EditorActivity.class);
+                // Form the content URI that represents the specific pet that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the
+                // {@link PetEntry#CONTENT_URI}.
+                // For example, the URI would be "content://com.example.android.pets/pets/2"
+                // if the pet with ID 2 was clicked on.
+                Log.d(LOG_TAG, "Customer Id " + mUri.getLastPathSegment());
+                Uri currentCustomerUri = ContentUris.withAppendedId(CustomerContract.CustomerEntry.CONTENT_URI, Long.parseLong(mUri.getLastPathSegment()));
+                //editorActivityIntent.putExtra("CustomerId", mUri.getLastPathSegment());
+                // Set the URI on the data field of the intent
+                editorActivityIntent.setData(currentCustomerUri);
+
+                // Launch the {@link EditorActivity} to display the data for the current customer.
+                startActivity(editorActivityIntent);
+            }
+        });
     }
 
     /**
@@ -113,6 +110,16 @@ public class DetailActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    /**
+     * Runs on the main thread when a load is complete. If initLoader is called (we call it from
+     * onCreate in DetailActivity) and the LoaderManager already has completed a previous load
+     * for this Loader, onLoadFinished will be called immediately. Within onLoadFinished, we bind
+     * the data to our views so the user can see the details of the weather on the date they
+     * selected from the forecast.
+     *
+     * @param loader The cursor loader that finished.
+     * @param cursorData   The cursor that is being returned.
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursorData) {
          /*

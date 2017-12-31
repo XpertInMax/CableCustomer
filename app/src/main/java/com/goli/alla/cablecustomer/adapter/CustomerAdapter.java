@@ -18,9 +18,11 @@ import com.goli.alla.cablecustomer.data.CustomerContract.CustomerEntry;
  * Created by Amani on 28-12-2017.
  */
 
-public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.CustomerAdapterViewHolder>{
+public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.CustomerAdapterViewHolder> {
 
-    /** Tag for the log messages */
+    /**
+     * Tag for the log messages
+     */
     public static final String LOG_TAG = CustomerAdapter.class.getSimpleName();
 
     /* The context we use to utility methods, app resources and layout inflaters */
@@ -46,9 +48,8 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
     /**
      * Creates a ForecastAdapter.
      *
-     * @param context Used to talk to the UI and app resources
+     * @param context      Used to talk to the UI and app resources
      * @param clickHandler
-     *
      */
     public CustomerAdapter(@NonNull Context context, CustomerAdapterListItemClickHandler clickHandler) {
         mContext = context;
@@ -68,7 +69,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
      */
     @Override
     public CustomerAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Log.d(LOG_TAG , "onCreateViewHolder : called " );
+        Log.d(LOG_TAG, "onCreateViewHolder : called ");
         int customerListItemLayout = R.layout.customer_list_item;
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         boolean shouldAttachToParentImmediately = false;
@@ -90,7 +91,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
      */
     @Override
     public void onBindViewHolder(CustomerAdapterViewHolder customerAdapterViewHolder, int position) {
-        Log.d(LOG_TAG , "onBindViewHolder : called " );
+        Log.d(LOG_TAG, "onBindViewHolder : called ");
         mCursor.moveToPosition(position);
 
         customerAdapterViewHolder.mFirstName.setText(mCursor.getString(MainActivity.INDEX_COLUMN_NAME_FIRST));
@@ -111,7 +112,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
      */
     @Override
     public int getItemCount() {
-        Log.d(LOG_TAG , "getItemCount : called " );
+        Log.d(LOG_TAG, "getItemCount : called ");
         if (null == mCursor) return 0;
         return mCursor.getCount();
     }
@@ -121,8 +122,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
      * a cache of the child views for a forecast item. It's also a convenient place to set an
      * OnClickListener, since it has access to the adapter and the views.
      */
-    class CustomerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    class CustomerAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView mFirstName;
         final TextView mLastName;
         //final TextView mMiddleName;
@@ -133,18 +133,25 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
 
         public CustomerAdapterViewHolder(View itemView) {
             super(itemView);
-            Log.d(LOG_TAG , "CustomerAdapterViewHolder : called " );
+            Log.d(LOG_TAG, "CustomerAdapterViewHolder : called ");
             mFirstName = itemView.findViewById(R.id.tv_firstName);
             mLastName = itemView.findViewById(R.id.tv_lastName);
-           // mMiddleName = itemView.findViewById(R.id.tv_middleName);
+            // mMiddleName = itemView.findViewById(R.id.tv_middleName);
             mAddress1 = itemView.findViewById(R.id.tv_address1);
             mCity = itemView.findViewById(R.id.tv_city);
             mState = itemView.findViewById(R.id.tv_state);
             mAptNum = itemView.findViewById(R.id.tv_aptnum);
 
-           itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
+        /**
+         * This gets called by the child views during a click. We fetch the date that has been
+         * selected, and then call the onClick handler registered with this adapter, passing that
+         * customer Id.
+         *
+         * @param v the View that was clicked
+         */
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
@@ -163,7 +170,15 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.Custom
      * @param newCursor the new cursor to use as ForecastAdapter's data source
      */
     public void swapCursor(Cursor newCursor) {
+        //Inside, check if the current cursor is not null, and close it if so
+        // Always close the previous mCursor first
+        if (mCursor != null) mCursor.close();
+        // Update the local mCursor to be equal to  newCursor
         mCursor = newCursor;
-        notifyDataSetChanged();
+        //Check if the newCursor is not null, and call this.notifyDataSetChanged() if so
+        if (newCursor != null) {
+            // Force the RecyclerView to refresh
+            this.notifyDataSetChanged();
+        }
     }
 }

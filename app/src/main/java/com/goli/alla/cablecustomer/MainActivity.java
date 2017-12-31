@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -85,6 +86,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Log.d(LOG_TAG , "onCreate : called " );
+
+        // Setup FAB to open EditorActivity to Add Customer
+        FloatingActionButton onAddCustomerFab = (FloatingActionButton) findViewById(R.id.fab);
+        onAddCustomerFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editorActivityIntent = new Intent(MainActivity.this, EditorActivity.class);
+                startActivity(editorActivityIntent);
+            }
+        });
         /*
          * Using findViewById, we get a reference to our RecyclerView from xml. This allows us to
          * do things like set the adapter of the RecyclerView and toggle the visibility.
@@ -147,10 +158,11 @@ public class MainActivity extends AppCompatActivity
          */
         getSupportLoaderManager().initLoader(ID_CUSTOMER_LOADER, null, this);
 
+        /* Use this only at firt time for loading intial data for testing
         Uri uri = CustomerEntry.CONTENT_URI;
         getContentResolver().delete(uri, null, null);
 
-        FakeDataUtils.insertFakeData(this);
+        FakeDataUtils.insertFakeData(this);*/
     }
 
     /**
@@ -248,9 +260,6 @@ public class MainActivity extends AppCompatActivity
         mRecyclerViewCustomer.setVisibility(View.VISIBLE);
     }
 
-//  COMPLETED (33) Delete showErrorMessage
-
-//  COMPLETED (34) Create a method called showLoading that shows the loading indicator and hides the data
     /**
      * This method will make the loading indicator visible and hide the customer View and error
      * message.
@@ -290,7 +299,7 @@ public class MainActivity extends AppCompatActivity
         // Form the content URI that represents the specific pet that was clicked on,
         // by appending the "id" (passed as input to this method) onto the
         // {@link PetEntry#CONTENT_URI}.
-        // For example, the URI would be "content://com.gaf.android.cablevision/customer/2"
+        // For example, the URI would be "content://com.goli.alla.cablecustomer/customer/2"
         // if the pet with ID 2 was clicked on.
         Uri uriForDateClicked = ContentUris.withAppendedId(CustomerEntry.CONTENT_URI, clickedCustomerId);
         Log.d(LOG_TAG, "Uri formed :" + uriForDateClicked.toString());

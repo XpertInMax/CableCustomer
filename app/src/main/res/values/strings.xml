@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">CableCustomer</string>
     <string name="title_activity_detail">Customer Details</string>
+    <string name="title_save">Save</string>
+
+    <!-- Toast message in editor when new customer has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_customer_successful">Customer saved</string>
+
+    <!-- Toast message in editor when new customer has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_insert_customer_failed">Error with saving customer</string>
+
+    <!-- Toast message in editor when new customer has been successfully inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_update_customer_successful">Customer saved</string>
+
+    <!-- Toast message in editor when new customer has failed to be inserted [CHAR LIMIT=NONE] -->
+    <string name="editor_update_customer_failed">Error with saving customer</string>
 </resources>
